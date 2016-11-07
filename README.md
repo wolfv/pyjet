@@ -42,7 +42,7 @@ var   = jt.variable.(name='variable', value=np.zeros((2, 1)))
 const = jt.constant.(name='constant', value=1.5)
 
 op = ph[1, 1] + ph[0:2, 0:2] * var + const
-out0 = jt.concatenate.((var, op), axis=1)
+out0 = jt.concatenate((var, op), axis=1)
 out1 = jt.linalg.norm(var)
 ph[0:2, 0:1] = var
 
@@ -64,7 +64,7 @@ jb = JetBuilder(out=[out0, out1], fun_name='test')
 Starting at the out-nodes, `JetBuilder` traverses the graph backwards and
 collects all nodes necessary to compute the output-values. This will create the
 following computation graph representing the `test`-function:
-​
+
 ```python
 test_source = jb.to_cpp()
 print(test_source)  # this is the real C++ that got generated
