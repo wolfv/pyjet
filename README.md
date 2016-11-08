@@ -44,8 +44,8 @@ import jet as jt
 jt.set_options(jet_mode=True) # Activate JET
 
 ph  = jt.placeholder(name='holder', shape=(3, 3))
-var   = jt.variable.(name='variable', value=np.zeros((2, 1)))
-const = jt.constant.(name='constant', value=1.5)
+var   = jt.variable(name='variable', value=np.zeros((2, 1)))
+const = jt.constant(name='constant', value=1.5)
 
 op = ph[1, 1] + ph[0:2, 0:2] * var + const
 out0 = jt.concatenate((var, op), axis=1)
