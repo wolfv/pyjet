@@ -57,7 +57,7 @@ This will create the following graph:
 The dotted grey edges ensure that their head is executed after their tail.
 
 ```python
-from jet.intake import JetBuilder
+from jet.compressor import JetBuilder
 jb = JetBuilder(out=[out0, out1], fun_name='test')
 ```
 
@@ -132,7 +132,7 @@ test_class = test_module.JetTest()
 test_class.variable = np.array([1, 2])
 
 # calling our function
-print tj.test(np.ones((3,3)))
+print test_class.test(np.ones((3,3)))
 ```
 
 This prints the following output-tuple:
@@ -349,6 +349,12 @@ Manually install Armadillo library:
 
 `python install_armadillo.py`
 
+### BLAS and LAPACK
+Linear algebra libraries required by Armadillo.
+
+Installation:
+`sudo apt-get install libblas-dev liblapack-dev`
+
 ### PyGraphviz
 PyGraphviz is used to create a .dot-file representation of JET's computation graph.
 
@@ -364,6 +370,7 @@ JET's computation graph is stored using NetworkX.
 Installation:
 
 `sudo pip install networkx`
+
 ***
 
 ## Internals

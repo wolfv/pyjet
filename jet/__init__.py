@@ -91,6 +91,8 @@ else:
 _overload_funcs()
 # _overload_funcs_deep(globals(), obj=sys.modules[__name__])
 
+from jet.jit import jit
+
 def set_options(jet_mode=False,
                 debug=False,
                 merge=True,

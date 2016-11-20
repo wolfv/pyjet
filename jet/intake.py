@@ -1,7 +1,7 @@
 import numpy
 from jet import config
 from jet import utils
-from jet import expander
+import expander
 
 
 ##########################################################################
