@@ -2,7 +2,7 @@ import numpy as np
 import inspect
 from pprint import pprint
 import networkx as nx
-from jet import intake
+import intake
 from jet.utils import get_unique_name
 from jet import config
 
@@ -16,7 +16,7 @@ graph = nx.DiGraph()
 ####                          Operations                              ####
 ##########################################################################
 
-class Op(object): # TODO dominique: I think these are better described with expression, than with operation
+class Op(object):
     # Base class for all operations
     def __init__(self, inputs, *args, **kwargs):
         self.inputs_raw = inputs

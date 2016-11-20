@@ -121,7 +121,3 @@ def while_loop(cond, body, args):
         raise NotImplementedError()
         op = WhileOp#([cond] + [body(*args, register as while subgraph)])
         return op.get_output()
-
-
-
-
