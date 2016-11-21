@@ -10,7 +10,7 @@ def jit(*shapes):
         if (jet.jet_mode):
             func_cached = func_cached_dict.get(id(func))
             if not func_cached:            
-                arg_names = func.__code__.co_varnames
+                arg_names = func.__code__.co_varnames[0:func.__code__.co_argcount]
 
                 if len(shapes) != len(arg_names) and len(shapes) != 0:
                     raise ValueError('Shapes length does not match the arguments length.')

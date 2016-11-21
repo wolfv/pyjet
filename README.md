@@ -168,6 +168,28 @@ gives us the following output:
 
 ***
 
+### JIT-Decorator
+The quickest way to make a function faster is by using the JIT (Just-In-Time compiler) decorator:
+
+```python
+import jet
+from jet import jit
+import numpy as np
+
+
+jet.set_options(jet_mode=True)
+
+@jit((2,), ())
+def calc(a, b):
+    c = a + b
+    return c
+
+print(calc(np.array([1, 2]), 2))
+```
+
+The jit decorator takes the functions arguments shapes as parameters. JET will 
+assume they have all shape `()` if no shapes are passed.
+
 ## Supported operations
 
 Note: The biggest problem is that some control-flow operations are *not*
@@ -353,6 +375,7 @@ Manually install Armadillo library:
 Linear algebra libraries required by Armadillo.
 
 Installation:
+
 `sudo apt-get install libblas-dev liblapack-dev`
 
 ### PyGraphviz
