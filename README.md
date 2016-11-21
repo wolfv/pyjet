@@ -169,7 +169,8 @@ gives us the following output:
 ***
 
 ### JIT-Decorator
-The quickest way to make a function faster is by using the JIT (Just-In-Time compiler) decorator:
+The quickest way to speed up a function with JET is by using the JIT
+(Just-In-Time compiler) decorator:
 
 ```python
 import jet
@@ -187,8 +188,15 @@ def calc(a, b):
 print(calc(np.array([1, 2]), 2))
 ```
 
-The jit decorator takes the functions arguments shapes as parameters. JET will 
-assume they have all shape `()` if no shapes are passed.
+The `@jit` decorator takes the function argument shapes as tuple parameters.
+JET will assume they have all scalar-shape `()` by default if no shapes are passed.
+
+Supported shapes:
+* scalar: `()`
+* vector: `(n,)`
+* matrix: `(n, m)`
+
+***
 
 ## Supported operations
 
