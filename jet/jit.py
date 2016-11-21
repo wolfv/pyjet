@@ -16,7 +16,7 @@ def jit(*shapes):
                     raise ValueError('Shapes length does not match the arguments length.')
 
                 ph = map(lambda (idx, name): jet.placeholder(name=name, shape=shapes[idx] if shapes else ()), enumerate(arg_names))
-                jb = JetBuilder(out=[func(*ph)], file_name=sanitize_name('{}_{}_{func_name}'.format(*get_caller_info('decorator.py')[1:-1], func_name=func.__code__.co_name)))
+                jb = JetBuilder(out=[func(*ph)], file_name=sanitize_name('{}_{}_{func_name}'.format(*get_caller_info('jit.py')[1:-1], func_name=func.__code__.co_name)))
 
                 func_cached = jb.build().JetClass().func
 
