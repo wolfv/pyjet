@@ -187,7 +187,6 @@ def calc(a, b):
 
 print(calc(np.array([1, 2]), 2))
 ```
-
 The `@jit` decorator takes the function argument shapes as tuple parameters.
 JET will assume they have all scalar-shape `()` by default if no shapes are passed.
 
