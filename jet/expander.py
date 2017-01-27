@@ -2,7 +2,7 @@ import numpy as np
 from pprint import pprint
 import networkx as nx
 import intake
-from jet.utils import get_unique_name, get_caller_info
+from utils import get_unique_name, get_caller_info
 from jet import config
 
 

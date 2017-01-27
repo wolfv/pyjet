@@ -186,7 +186,7 @@ import numpy as np
 
 jet.set_options(jet_mode=True)
 
-@jit((2,), ())
+@jit((2,), ()) # or @jit, @jit()
 def calc(a, b):
     c = a + b
     return c
@@ -194,7 +194,8 @@ def calc(a, b):
 print(calc(np.array([1, 2]), 2))
 ```
 The `@jit` decorator takes the function argument shapes as tuple parameters.
-JET will assume they have all scalar-shape `()` by default if no shapes are passed.
+JET will detect the shapes by evaluating the input arguments if no shapes are 
+passed to the decorator.
 
 Supported shapes:
 * scalar: `()`

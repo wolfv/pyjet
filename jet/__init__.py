@@ -9,7 +9,6 @@ if sys.version_info >= (3, 4):
 elif sys.version_info[0] > 3:
     import imp
     reload = imp.reload
-    
 
 
 jet_mode = config.jet_mode

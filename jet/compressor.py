@@ -2,7 +2,7 @@
 
 import numpy as np
 import networkx as nx
-from jet.utils import get_unique_name, beauty, sanitize_name
+from utils import get_unique_name, beauty, sanitize_name
 from jet import expander
 from jet import config
 from jet import exhaust
@@ -33,7 +33,7 @@ using namespace std;
 // constants
 {consts}
 
-class Jet{class_name} {{
+class {class_name} {{
 public:
 
     // member variables
@@ -44,7 +44,7 @@ public:
     unsigned int cell_width;
 
     // constructor
-    Jet{class_name}() {{
+    {class_name}() {{
         // number of digits in double
         unsigned int double_digits = numeric_limits<double>::max_digits10; // 17
         cell_width = double_digits + 4;
@@ -68,10 +68,10 @@ public:
 
 namespace py = pybind11;
 void pyexport(py::module& m) {{
-    py::class_<Jet{class_name}>(m, "Jet{class_name}")
+    py::class_<{class_name}>(m, "{class_name}")
         .def(py::init<>())
-        .def("{fun_name}", &Jet{class_name}::{fun_name})
-        .def("args", [](Jet{class_name}&) {{
+        .def("{fun_name}", &{class_name}::{fun_name})
+        .def("args", []({class_name}&) {{
             return vector<string> {{ {arg_names} }};
         }})
         {state_accessors}
@@ -120,7 +120,7 @@ class JetBuilder(object):
         self.Op = OpCollector()
         self.file_name = file_name
         self.fun_name = fun_name
-        self.class_name = 'Class'
+        self.class_name = fun_name.title() + 'Class'
         self.extract_return(out)
 
         # extract sequential list, starting at output
@@ -237,7 +237,7 @@ class JetBuilder(object):
         Returns:
             str: The compilable C++
         """
-        fmt_state_acc = '.def_readwrite("{name}", &Jet{class_name}::{name})'
+        fmt_state_acc = '.def_readwrite("{name}", &{class_name}::{name})'
         all_ops = [op for op in self.ops if not hasattr(op, 'node_merged')]
         all_accessors = [fmt_state_acc.format(name=v.name,
                                               class_name=self.class_name) 
@@ -262,7 +262,6 @@ class JetBuilder(object):
     def build(self):
         cpp = self.to_cpp()
         return exhaust.compile_cpp(cpp, self.file_name)
-
 
 class BaseArray(object):
     def get_dtype(self):
