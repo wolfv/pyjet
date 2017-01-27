@@ -2,7 +2,7 @@
 
 import numpy as np
 import networkx as nx
-from utils import get_unique_name, beauty, sanitize_name
+from jet.utils import get_unique_name, beauty, sanitize_name
 from jet import expander
 from jet import config
 from jet import exhaust

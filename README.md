@@ -396,7 +396,7 @@ PyGraphviz is used to create a .dot-file representation of JET's computation gra
 
 Installation:
 
-`sudo apt-get install graphviz-dev`
+`sudo apt-get install graphviz`
 
 `sudo pip install pygraphviz --install-option="--include-path=/usr/include/graphviz" --install-option="--library-path=/usr/lib/graphviz/"`
 

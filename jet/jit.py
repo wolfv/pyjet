@@ -69,7 +69,6 @@ if __name__ == "__main__":
     def test_func3(a, b):
         return a * b
 
-    # a = jet.array((2,))
     b = 1.0
     print(test_func(numpy.array([1, 2]), b))
     print(test_func(numpy.array([1, 4]), b))
