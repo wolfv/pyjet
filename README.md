@@ -21,6 +21,12 @@ between the nodes.
 
 ***
 
+## Setup
+
+    python setup.py install
+
+Note: Is currently only tested on Ubuntu (known to be broken on macOS).
+
 ## Tutorial Style Introduction
 
 JET gives you a few operators to use, modelled after TensorFlow.
