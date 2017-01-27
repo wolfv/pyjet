@@ -96,7 +96,7 @@ using namespace std;
 // constants
 constexpr double constant = 1.5;
 
-class JetTest {
+class TestClass {
 public:
   // member variables
   mat::fixed<2, 1> variable = {0.0, 0.0};
@@ -117,12 +117,12 @@ public:
 
 namespace py = pybind11;
 void pyexport(py::module &m) { // Python glue
-  py::class_<JetTest>(m, "JetTest")
+  py::class_<TestClass>(m, "TestClass")
       .def(py::init<>()) // initialisation
-      .def("test", &JetTest::test) // Access to function
-      .def("args", [](JetTest &) {
+      .def("test", &TestClass::test) // Access to function
+      .def("args", [](TestClass &) {
           return std::vector<std::string>{"holder"}; }) // String-vector containing the ordered argument names
-      .def_readwrite("variable", &JetTest::variable); // Access to variable
+      .def_readwrite("variable", &TestClass::variable); // Access to variable
 }
 ```
 
@@ -131,7 +131,7 @@ the compiled and imported Python module:
 
 ```python
 test_module = jb.build()
-test_class = test_module.JetTest()
+test_class = test_module.TestClass()
 
 # adjustable class member 'variable':
 test_class.variable = np.array([1, 2])
