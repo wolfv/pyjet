@@ -102,7 +102,7 @@ class CreateArrayOp(Op):
         self.output = producer # TODO dominique: this is some weird naming convention: a producer is an output? isn't a producer normally responsible for the input?
         self.shape = shape
         if config.debug or config.group_class or config.group_func:
-            self.caller_info = get_caller_info('expander.py', 'intake().py')
+            self.caller_info = get_caller_info('expander.py', 'intake.py')
         else:
             self.caller_info = None
         self.add_to_graph()
