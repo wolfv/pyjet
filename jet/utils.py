@@ -1,4 +1,9 @@
 import inspect
+import sys
+
+if sys.version_info[0] >= 3:
+    import functools
+    reduce = functools.reduce
 
 # Below are functions related to generating unique names. Every graph object has
 # to have a unique name, which is re-used in the generated C++ Output
@@ -78,7 +83,7 @@ def get_caller_info(*exclude_list):
         curframe = inspect.currentframe()
         calframe = inspect.getouterframes(curframe)
         i = 0
-        while reduce(lambda bool_1st, bool_2nd: bool_1st or bool_2nd, map(lambda name: (len(calframe[i][1]) >= len(name) and calframe[i][1][-len(name):] == name) , exclude_list)):
+        while i + 1 < len(calframe) and reduce(lambda bool_1st, bool_2nd: bool_1st or bool_2nd, map(lambda name: (len(calframe[i][1]) >= len(name) and calframe[i][1][-len(name):] == name) , exclude_list)):
             i += 1
         class_name = get_class_from_frame(calframe[i][0])
         line = 'line {}'.format(calframe[i][2])
