@@ -1,6 +1,6 @@
 from jet.compressor import JetBuilder
-from utils import sanitize_name, get_caller_info
-from intake import placeholder
+from jet.utils import sanitize_name, get_caller_info
+from jet.intake import placeholder
 import jet
 
 
@@ -30,9 +30,9 @@ def jit(*shapes):
                 shapes = [arg.shape if hasattr(arg, 'shape') else () for arg in args]
                 _func_cached_dict[func_id]['shapes'] = shapes
 
-            ph = map(lambda arg: placeholder(
-                        name=arg[1], shape=shapes[arg[0]]), enumerate(arg_names))
+            ph = [placeholder(name=arg[1], shape=shapes[arg[0]]) for arg in enumerate(arg_names)]
             fun_name = func.__code__.co_name
+
             jb = JetBuilder(out=[func(*ph)],
                     file_name=sanitize_name('{}_{}_{func_name}'.format(
                             *get_caller_info('jit.py')[1:-1],
@@ -69,7 +69,7 @@ if __name__ == "__main__":
     def test_func3(a, b):
         return a * b
 
-    a = jet.array((2,))
+    # a = jet.array((2,))
     b = 1.0
     print(test_func(numpy.array([1, 2]), b))
     print(test_func(numpy.array([1, 4]), b))

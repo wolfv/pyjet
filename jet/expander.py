@@ -1,8 +1,8 @@
 import numpy as np
 from pprint import pprint
 import networkx as nx
-import intake
-from utils import get_unique_name, get_caller_info
+from jet import intake
+from jet.utils import get_unique_name, get_caller_info
 from jet import config
 
 
@@ -32,6 +32,7 @@ class Op(object):
         pass
 
     def add_to_graph(self):
+        print("ADDING TO GRAPH", self)
         if hasattr(self, 'name'): # TODO dominique: is this check here? the class has a property 'name'
             graph.add_node(self, name=self.name)
         else:
@@ -43,7 +44,7 @@ class Op(object):
                     graph.add_edge(arr.assignment[-1], self, array=arr.name)
                 elif hasattr(arr, 'producer'):
                     graph.add_edge(arr.producer, self, array=arr.name)
-
+        print(graph.nodes())
     def get_output(self):
         return self.output
 
