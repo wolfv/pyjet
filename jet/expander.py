@@ -11,13 +11,11 @@ placeholder_count = 0
 graph = nx.DiGraph()
 
 # hack to fix issues with circular dependencies
-_intake = None
-def intake():
-    global _intake
-    if _intake is None:
+intake = None
+def import_intake():
+    global intake
+    if intake is None:
         from jet import intake
-        _intake = intake
-    return _intake
 
 ##########################################################################
 ####                          Operations                              ####
@@ -117,7 +115,7 @@ class AssignOp(Op):
                 slice_shape = np.zeros(inputs[0].shape)[slices[0]].shape
             else:
                 slice_shape = np.zeros(inputs[0].shape)[slices[0], slices[1]].shape
-            self.output = intake().array(name=self.op, dtype=inputs[0].dtype, 
+            self.output = intake.array(name=self.op, dtype=inputs[0].dtype, 
                                        shape=inputs[0].shape,
                                        producer=self,
                                        slice_shape=slice_shape)
@@ -125,7 +123,7 @@ class AssignOp(Op):
                     slice_to_str(slices[0]),
                     slice_to_str(slices[1])) + '\\n' + str(self.output.shape)
         else:
-            self.output = intake().array(name=self.op,
+            self.output = intake.array(name=self.op,
                                        dtype=inputs[0].dtype,
                                        shape=inputs[0].shape,
                                        producer=self)
@@ -163,7 +161,7 @@ class ViewOp(Op):
         else:
             new_shape = np.zeros(inputs[0].shape)[self.slices[0], self.slices[1]].shape
 
-        self.output = intake().array(name=self.op, shape=new_shape, producer=self)
+        self.output = intake.array(name=self.op, shape=new_shape, producer=self)
 
     def __repr__(self):
         if len(self.slices) == 1:
@@ -180,7 +178,7 @@ class ArrayAccessOp(Op):
             shape = np.zeros(inputs[0].shape)[at_idx[0]].shape
         else:
             shape = np.zeros(inputs[0].shape)[at_idx[0], at_idx[1]].shape
-        self.output = intake().array(name=self.op, shape=shape, producer=self)
+        self.output = intake.array(name=self.op, shape=shape, producer=self)
         self.at_idx = at_idx
 
     def __repr__(self):
@@ -196,7 +194,7 @@ class ConcatenateOp(Op):
         self.axis=axis
         self.shape = np.concatenate((np.zeros(inputs[0].shape),
                                     np.zeros(inputs[1].shape)), axis=axis).shape
-        self.output = intake().array(name=self.op, shape=self.shape,
+        self.output = intake.array(name=self.op, shape=self.shape,
                               dtype=upcast(inputs),
                               producer=self)
 
@@ -205,7 +203,7 @@ class WhereOp(Op):
         self.op = 'Where'
         assert(inputs[1].shape == inputs[2].shape)
         shape = inputs[1].shape
-        self.output = intake().array(name=self.op, shape=shape,
+        self.output = intake.array(name=self.op, shape=shape,
                               dtype=upcast(inputs[1:3]),
                               producer=self)
 # not implemented yet
@@ -218,21 +216,21 @@ class ZerosOp(Op):
     def init_op(self, inputs, shape, dtype=config.DTYPE):
         self.op = 'Zeros'
         self.shape = shape
-        self.output = intake().array(name='zeros_mat', shape=self.shape,
+        self.output = intake.array(name='zeros_mat', shape=self.shape,
                               dtype=dtype, producer=self)
 
 class OnesOp(Op):
     def init_op(self, inputs, shape, dtype=config.DTYPE):
         self.op = 'Ones'
         self.shape = shape
-        self.output = intake().array(name='ones_mat', shape=self.shape,
+        self.output = intake.array(name='ones_mat', shape=self.shape,
                               dtype=dtype, producer=self)
 
 class EyeOp(Op):
     def init_op(self, inputs, shape, dtype=config.DTYPE):
         self.op = 'Eye'
         self.shape = shape
-        self.output = intake().array(name='eye_mat', shape=self.shape,
+        self.output = intake.array(name='eye_mat', shape=self.shape,
                               dtype=dtype, producer=self)
 
 class MatMulOp(Op):
@@ -241,7 +239,7 @@ class MatMulOp(Op):
         # result of mat mul = new matrix
         # n x m * m x p -> n * p
         shape = np.dot(np.zeros(inputs[0].shape), np.zeros(inputs[1].shape)).shape
-        self.output = intake().array(name=self.op,
+        self.output = intake.array(name=self.op,
                                    shape=shape,
                                    dtype=upcast(inputs),
                                    producer=self)
@@ -258,7 +256,7 @@ class DotOp(Op):
         # result of mat mul = new matrix
         # n x m * m x p -> n * p
         shape = np.dot(np.zeros(inputs[0].shape), np.zeros(inputs[1].shape)).shape
-        self.output = intake().array(name=self.op,
+        self.output = intake.array(name=self.op,
                                    shape=shape,
                                    dtype=upcast(inputs),
                                    producer=self)
@@ -267,7 +265,7 @@ class ModOp(Op):
     def init_op(self, inputs):
         self.op = 'Mod'
         shape = self.inputs[0].shape
-        self.output = intake().array(name=self.op, shape=shape,
+        self.output = intake.array(name=self.op, shape=shape,
                               dtype=config.DTYPE,
                               producer=self)
 
@@ -275,7 +273,7 @@ class ArcTan2Op(Op):
     def init_op(self, inputs):
         self.op = 'ArcTan2'
         shape = self.inputs[0].shape
-        self.output = intake().array(name=self.op, shape=shape,
+        self.output = intake.array(name=self.op, shape=shape,
                               dtype=config.DTYPE,
                               producer=self)
 
@@ -284,7 +282,7 @@ class ClipOp(Op):
         self.op = 'Clip'
         assert(inputs[1].shape == inputs[2].shape)
         shape = inputs[0].shape
-        self.output = intake().array(name=self.op, shape=shape,
+        self.output = intake.array(name=self.op, shape=shape,
                                   dtype=upcast(inputs),
                                   producer=self)
 
@@ -301,7 +299,7 @@ class UnaryOp(Op):
             dtype = self.dtype
         else:
             dtype = self.inputs[0].dtype
-        self.output = intake().array(name=self.op, shape=shape, dtype=dtype,
+        self.output = intake.array(name=self.op, shape=shape, dtype=dtype,
                               producer=self)
 
 class NegOp(UnaryOp):
@@ -365,7 +363,7 @@ class BinOp(Op):
     or [1, 2, 3] + [4, 5, 6] = [5, 7, 9]
     """
     def init_op(self, inputs):
-        self.output = intake().array(name=self.op, shape=self.shape_op(inputs),
+        self.output = intake.array(name=self.op, shape=self.shape_op(inputs),
                               dtype=upcast(inputs), producer=self)
 
     def shape_op(self, inputs):
@@ -462,7 +460,7 @@ class SolveOp(Op):
             raise ValueError(
                 'LHS shape {} and RHS shape {} not compatible for solve.'
                 .format(inputs[0].shape, inputs[1].shape))
-        self.output = intake().array(name=self.op, shape=inputs[1].shape,
+        self.output = intake.array(name=self.op, shape=inputs[1].shape,
                               dtype=upcast(inputs), producer=self)
 
 class NormOp(Op):
@@ -473,7 +471,7 @@ class NormOp(Op):
         if inputs[0].ndim > 1:
             if inputs[0].shape[1] > 1:
                 raise NotImplementedError('Only vectors supported.')
-        self.output = intake().array(name=self.op, shape=(), dtype=upcast(inputs),
+        self.output = intake.array(name=self.op, shape=(), dtype=upcast(inputs),
                               producer=self)
 
 ##########################################################################
@@ -484,7 +482,7 @@ class RandomNormalOp(Op):
     def init_op(self, inputs):
         self.op = 'RandomNormal'
         shape = (np.zeros(inputs[0].shape) + np.zeros(inputs[1].shape)).shape
-        self.output = intake().array(name=self.op,
+        self.output = intake.array(name=self.op,
                                    shape=shape,
                                    dtype=config.DTYPE,
                                    producer=self)
@@ -497,7 +495,7 @@ class RavelOp(Op):
     def init_op(self, inputs):
         self.op = 'Ravel'
         shape = np.zeros(inputs[0].shape).ravel().shape
-        self.output = intake().array(name=self.op,
+        self.output = intake.array(name=self.op,
                                    shape=shape, 
                                    dtype=inputs[0].dtype,
                                    producer=self)
@@ -505,7 +503,7 @@ class RavelOp(Op):
 class AnyOp(Op):
     def init_op(self, inputs):
         self.op = 'Any'
-        self.output = intake().array(name=self.op,
+        self.output = intake.array(name=self.op,
                                    shape=inputs[0].shape,
                                    dtype=bool,
                                    producer=self)
@@ -514,7 +512,7 @@ class TransposeOp(Op):
     def init_op(self, inputs):
         self.op = 'Transpose'
         shape = np.zeros(inputs[0].shape).transpose().shape
-        self.output = intake().array(name=self.op,
+        self.output = intake.array(name=self.op,
                                    shape=shape,
                                    dtype=inputs[0].dtype,
                                    producer=self)
@@ -522,7 +520,7 @@ class TransposeOp(Op):
 class ReshapeOp(Op):
     def init_op(self, inputs, shape):
         self.op = 'Reshape'
-        self.output = intake().array(name=self.op,
+        self.output = intake.array(name=self.op,
                                    shape=shape, 
                                    dtype=inputs[0].dtype, 
                                    producer=self)
@@ -530,7 +528,7 @@ class ReshapeOp(Op):
 class MaxOp(Op):
     def init_op(self, inputs):
         self.op = 'Max'
-        self.output = intake().array(name=self.op,
+        self.output = intake.array(name=self.op,
                                    shape=(), 
                                    dtype=inputs[0].dtype, 
                                    producer=self)
@@ -538,7 +536,7 @@ class MaxOp(Op):
 class MinOp(Op):
     def init_op(self, inputs):
         self.op = 'Min'
-        self.output = intake().array(name=self.op,
+        self.output = intake.array(name=self.op,
                                    shape=(), 
                                    dtype=inputs[0].dtype, 
                                    producer=self)
@@ -563,16 +561,15 @@ def find_node(n):
             return node
 
 def check_type(*args):
-    jt_intake = intake()
     arg_list = list(args)
     num_types = [float, int, bool, np.ndarray, np.float64, np.float32]
-    jet_types = [jt_intake.variable, jt_intake.constant, jt_intake.placeholder, jt_intake.array]
+    jet_types = [intake.variable, intake.constant, intake.placeholder, intake.array]
 
     for i, arg in enumerate(args):
         if arg is not None and type(arg) not in jet_types:
             if type(arg) in num_types:
                 # this is a constant
-                arg_list[i] = jt_intake.constant(arg)
+                arg_list[i] = intake.constant(arg)
                 constants.append(arg)
             else:
                 raise ValueError('Unexpected type \'{}\'.'.format(type(arg)))

@@ -71,7 +71,8 @@ def _overload_funcs():
 if jet_mode:
     from numpy import *
     from jet.intake import *
-    from jet.expander import graph
+    from jet.expander import graph, import_intake
+    import_intake()
     if config.print_banner:
         print(config.BANNER)
     if config.debug:
