@@ -56,7 +56,7 @@ from jet.burn import draw
 draw(jt.graph)
 ```
 
-This will create the following graph:
+This will create the following computation graph:
 
 ![](https://s31.postimg.org/53c78nf0r/graph.png)
 
@@ -64,12 +64,11 @@ The dotted grey edges ensure that their head is executed after their tail.
 
 ```python
 from jet.compressor import JetBuilder
-jb = JetBuilder(out=[out0, out1], fun_name='test')
+jb = JetBuilder(out=[out0, out1], fun_name='test', file_name='test_jet')
 ```
 
 Starting at the out-nodes, `JetBuilder` traverses the graph backwards and
-collects all nodes necessary to compute the output-values. This will create the
-following computation graph representing the `test`-function:
+collects all nodes necessary to compute the output-values.
 
 ```python
 test_source = jb.to_cpp()
@@ -127,7 +126,7 @@ void pyexport(py::module &m) { // Python glue
 }
 ```
 
-We can compile the source code using `compile_cpp` which returns
+We can compile the source code using `build` which returns
 the compiled and imported Python module:
 
 ```python
