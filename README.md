@@ -23,7 +23,9 @@ between the nodes.
 
 ## Setup
 
-    python setup.py install
+Run the post-install script using the JET-CLI:
+
+    jet --install-dependencies
 
 Note: Is currently only tested on Ubuntu (known to be broken on macOS).
 
