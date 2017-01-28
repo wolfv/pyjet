@@ -5,21 +5,12 @@ import os, sys
 
 cwd = os.path.dirname(os.path.realpath(__file__))
 
-try:
-    ds.spawn(['sed', '-i',
-        's/set(ARMA_USE_WRAPPER true)/set(ARMA_USE_WRAPPER false)/',
-        cwd + '/jet/thirdparty/armadillo/CMakeLists.txt'])
-except ds.DistutilsExecError:
-    print("Error while setting ARMA_USE_WRAPPER to false.")
-    print("Please try to set ARMA_USE_WRAPPER in the CmakeLists.txt to false.")
-    sys.exit(-1)
-
 if ds.find_executable('cmake') is None:
     print("CMake  is required to build JET Armadillo")
     print("Please install cmake version >= 2.6 and re-run setup")
     sys.exit(-1)
 
-arma_path = os.path.join(cwd, 'jet', 'thirdparty', 'armadillo')
+arma_path = os.path.join(cwd, '..', 'thirdparty', 'armadillo')
 os.chdir(arma_path)
 
 print("Configuring JET Armadillo build with CMake.... ")

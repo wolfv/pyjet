@@ -1,22 +1,29 @@
 #!/usr/bin/env python
-import os, sys, glob
-
+import sys, os
+from fnmatch import fnmatch
 from setuptools import setup
-from distutils.command.install import install as _install
+from setuptools.command.install import install
 
-# copied from https://stackoverflow.com/questions/17806485/execute-a-python-script-post-install-using-distutils-setuptools
-def _post_install(dir):
-    from subprocess import call
-    call(['pip', 'install', 'pygraphviz',
-        '--install-option="--include-path=/usr/include/graphviz"',
-        '--install-option="--library-path=/usr/lib/graphviz/"',])
-    call([sys.executable, 'install_armadillo.py'])
 
-class install(_install):
-    def run(self):
-        _install.run(self)
-        self.execute(_post_install, (self.install_lib,),
-                     msg="Running post install task")
+def package_files(directory):
+    paths = []
+    for (path, directories, filenames) in os.walk(directory):
+        for filename in filenames:
+            paths.append(os.path.join('..', path, filename))
+
+    ignore_files = []
+    for line in open(".gitignore"):
+        li = line.strip()
+        if not li.startswith("#") and li != '':
+            ignore_files.append(li)
+
+    # attempt to imitate gitignore
+    paths_filtered = [path for path in paths 
+            if not any(
+                    any(fnmatch(part, ignore) for part in path.split('/'))
+                            for ignore in ignore_files)]
+    return paths_filtered
+
 long_description = \
 """The JET library offers a simple way to make Python, and especially NumPy code
 run faster. This is achieved by transparently converting Python/NumPy operations
@@ -24,7 +31,7 @@ to performant C++."""
 
 setup(
     name='Jet',
-    version='1.0',
+    version='0.0',
     description='JET, a framework for faster numeric Python',
     long_description=long_description,
     author='Wolf Vollprecht, Orestis Zambounis',
@@ -32,22 +39,15 @@ setup(
     url='https://github.com/wolfv/pyjet/',
     license='MIT',
     install_requires=[
-        "numpy",
-        "networkx",
-    ],
+            'numpy',
+            'networkx',],
     packages=['jet'],
+    scripts=['bin/jet'],
     package_data={
-            'jet': ['include/*.h', 
-            'thirdparty/armadillo/installed/**/**/**/*', 
-            'thirdparty/armadillo/installed/**/**/*', 
-            'thirdparty/armadillo/installed/**/*', 
-            'thirdparty/armadillo/installed/*', 
-            'thirdparty/cppimport/**/*',
-            'thirdparty/cppimport/*',
-            'thirdparty/pybind11/**/**/*'
-            'thirdparty/pybind11/**/*'
-            'thirdparty/pybind11/*'
-            'thirdparty/pybind11/pybind11/*'
-       ]},
-    cmdclass={'install': install},
+            'jet':
+                ['post_install/*',
+                'include/*.h',
+                '../.gitignore'] + 
+                package_files('jet/thirdparty')
+            },
 )

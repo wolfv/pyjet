@@ -11,6 +11,7 @@
 
 # Compiled Dynamic libraries
 *.so
+*.so.*
 *.dylib
 *.dll
 
@@ -29,6 +30,7 @@
 *.out
 *.app
 
+# Armadillo
 CMakeCache.txt
 CMakeFiles
 CMakeScripts
@@ -36,9 +38,12 @@ Makefile
 cmake_install.cmake
 install_manifest.txt
 CTestTestfile.cmake
+installed
+ArmadilloConfig*
+tmp
 
 # Byte-compiled / optimized / DLL files
-__pycache__/
+__pycache__
 *.py[cod]
 *$py.class
 
@@ -47,19 +52,19 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-env/
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-*.egg-info/
+env
+build
+develop-eggs
+dist
+downloads
+eggs
+.eggs
+lib
+lib64
+parts
+sdist
+var
+*.egg-info
 .installed.cfg
 *.egg
 
@@ -74,15 +79,15 @@ pip-log.txt
 pip-delete-this-directory.txt
 
 # Unit test / coverage reports
-htmlcov/
-.tox/
+htmlcov
+.tox
 .coverage
 .coverage.*
 .cache
 nosetests.xml
 coverage.xml
 *,cover
-.hypothesis/
+.hypothesis
 
 # Translations
 *.mo
@@ -93,7 +98,7 @@ coverage.xml
 local_settings.py
 
 # Flask stuff:
-instance/
+instance
 .webassets-cache
 
 # Scrapy stuff:
@@ -103,7 +108,7 @@ instance/
 docs/_build/
 
 # PyBuilder
-target/
+target
 
 # IPython Notebook
 .ipynb_checkpoints
@@ -118,8 +123,8 @@ celerybeat-schedule
 .env
 
 # virtualenv
-venv/
-ENV/
+venv
+ENV
 
 # Spyder project settings
 .spyderproject
@@ -128,4 +133,4 @@ ENV/
 .ropeproject
 
 # jet generated folders
-jet_generated/
+jet_generated
