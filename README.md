@@ -203,6 +203,56 @@ Supported shapes:
 
 ***
 
+### Migrating from a Numpy-project
+
+When migrating from a numpy project there are a few minor steps which must be
+taken:
+* Replace numpy operations with JET operations. Usually replacing `import numpy 
+as np` with `import jet as np` is sufficient. You don't have to replace constants
+such as `np.array([1, 2])` with JET-arrays.
+* Decorate all top-level functions with the JIT-decorator (or manually pass
+placeholders like in the tutorial above).
+* Set `jet_mode` to `True`. If `False` the the execution will be eqaual to normal
+Numpy instead.
+
+E.g.:
+
+```python
+import numpy as np
+
+def sub_func(a):
+    return a * 2
+
+def func(a, b):
+    c = sub_func(a) + b
+    return np.dot(c, c)
+
+print(func(np.array([1, 2]), 2))
+```
+
+becomes
+
+```python
+import jet as np
+from jet.jit import jit
+
+# has to be set only once since jet is a singleton module
+np.set_options(jet_mode=True)
+
+def sub_func(a):
+    return a * 2
+
+@jit
+def func(a, b):
+    c = sub_func(a) + b
+    return np.dot(c, c)
+
+import numpy
+print(func(numpy.array([1, 2]), 2))
+```
+
+***
+
 ## Supported operations
 
 Note: The biggest problem is that some control-flow operations are *not*

@@ -65,14 +65,18 @@ if __name__ == "__main__":
     def test_func2(a, b):
         return a - b
 
+    def sub_func(a):
+        return a * 2
+
     @jit
     def test_func3(a, b):
-        return a * b
+        return sub_func(a) * b
 
     b = 1.0
     print(test_func(numpy.array([1, 2]), b))
     print(test_func(numpy.array([1, 4]), b))
     print(test_func2(numpy.array([1, 2]), b))
+    print(test_func3(numpy.array([1, 2]), b))
     print(test_func3(numpy.array([1, 2]), b))
 
     print(_func_cached_dict)
