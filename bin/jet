@@ -1,14 +1,14 @@
 #!/usr/bin/python
 import argparse
 import sys, os, shutil
-import jet
+import pkgutil
 if sys.version_info[0] >= 3:
     from configparser import  ConfigParser
 else:
     from ConfigParser import  ConfigParser
 
 
-jet_path = os.path.dirname(jet.__file__)
+jet_path = pkgutil.get_loader("jet").filename
 
 config = ConfigParser()
 config.read(jet_path + "/.metadata")
