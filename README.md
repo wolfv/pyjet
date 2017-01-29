@@ -463,6 +463,7 @@ optional arguments:
 | PyGraphviz      | Graph visualization tool is used to create a .dot-file representation of JET's computation graph. |
 | Graphviz        | Required by PyGraphviz. |
 | NetworkX        | JET's computation graph is stored using NetworkX. |
+| ClangFormat     | Used to auto-format the C++ code. |
 
 ***
 

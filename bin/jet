@@ -24,11 +24,12 @@ parser.add_argument('--install-dependencies', help='install JET dependencies', a
 parser.add_argument('-v', '--version', help='show version number', action="store_true")
 args = parser.parse_args()
 
-if args.clean and os.path.exists('./jet_generated/'):
-    shutil.rmtree('./jet_generated/')
-if args.install_dependencies:
+if args.clean:
+    if os.path.exists('./jet_generated/'):
+        shutil.rmtree('./jet_generated/')
+elif args.install_dependencies:
     os.system('python ' + jet_path + '/post_install/post_install.py')
-if args.version:
+elif args.version:
     print(config.get('Version', 'version'))
 else:
     print("Arguments missing. Please use '--help' for information on how to use the jet-cli.")
