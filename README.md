@@ -19,8 +19,6 @@ The computation graph is represented as a Directed Acyclic Graph (DAG). Nodes of
 the graph represent a specific operation and edges are the data that flows
 between the nodes.
 
-***
-
 ## Use Case
 
 Significant speed-up is achieved for non-parallelizable functions such as
@@ -44,8 +42,6 @@ states = scipy.integrate.odeint(
     init_state,
     time_vec)
 ```
-
-***
 
 ## Setup
 
