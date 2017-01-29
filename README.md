@@ -26,7 +26,7 @@ between the nodes.
 Significant speed-up is achieved for non-parallelizable functions such as
 physical models. For parallelizable functions please consider using TensorFlow.
 
-Instead of calling a huge, math-heavy Python/Numpy simulation model on every
+Instead of calling a huge, math-heavy Python/NumPy simulation model on every
 iteration JET packs the whole model in a single performant C++ function which 
 results in an enormous speed-up (up to 60-fold speed up was observed in a
 simulation of a math-heavy quadcopter-model).
@@ -174,7 +174,7 @@ This prints the following output-tuple:
         [ 2. ,  4.5,  4.5]]), 2.23606797749979)
 ```
 
-Comparing with numpy:
+Comparing with NumPy:
 
 ```python
 import numpy as np # numpy to compare
@@ -226,10 +226,10 @@ Supported shapes:
 
 ***
 
-### Migrating from a Numpy-project
+### Migrating from a NumPy-project
 
-When migrating from a numpy project there are minor steps which must be taken:
-* Replace numpy operations with JET operations. Usually replacing `import numpy 
+When migrating from a NumPy project there are minor steps which must be taken:
+* Replace NumPy operations with JET operations. Usually replacing `import numpy 
 as np` with `import jet as np` is sufficient. You don't have to replace constants
 such as `np.array([1, 2])` with JET-arrays.
 * Decorate all top-level functions with the JIT-decorator (or manually pass
@@ -275,10 +275,10 @@ print(func(numpy.array([1, 2]), 2))
 
 Note: The biggest problem is that some control-flow operations are *not*
 supported. For example, it is not possible to use `if - else` or `while` and
-`for` statements. As workaround for `if - else` the numpy command `where` is
+`for` statements. As workaround for `if - else` the NumPy command `where` is
 currently provided.
 
-`jet.array`: Base array class which emulates numpy arrays. Variables, Constants
+`jet.array`: Base array class which emulates NumPy arrays. Variables, Constants
 and Placeholders are derived from this class.
 
 ### Member attributes of `array` class:
@@ -308,7 +308,7 @@ array.
 `>`, `>=`: Overloaded Python operators.
 
 ### `array` views and slices:
-Elements of an array can be set using the usual numpy assignment operations,
+Elements of an array can be set using the usual NumPy assignment operations,
 such as:
 
 ```python
@@ -343,7 +343,7 @@ Also, slices with steps are currently not supported (e.g. `1:3:5`).
 
 ### JET constans:
 
-All Numpy constants such as `pi` and `inf` are supported.
+All NumPy constants such as `pi` and `inf` are supported.
 
 ### JET functions:
 
@@ -416,7 +416,7 @@ jet.set_options(jet_mode=True,
 ```
 
 `jet_mode`:           Fly Mach 2 with JET. If this flag is not set JET will
-                      run using numpy instead.
+                      run using NumPy instead.
 
 `debug`:              Print what JET is doing. Every variable from the auto-
                       generated C++ code is printed in the console along
