@@ -330,7 +330,7 @@ v = a[0, :]
 v[0] = 100
 ```
 
-Also, slices with steps are currently not supported (e.g. `1:3:5`).
+Also, slices with steps or negative values are currently not supported (e.g. `1:3:-2`).
 
 ### Built-in functions:
 

@@ -17,7 +17,7 @@ def jit(*shapes):
             func_id = id(func)
             func_cached = _func_cached_dict[func_id]['func']
             if func_cached is not None:
-                return func_cached(*args)[0]
+                return func_cached(*args)
 
             shapes = _func_cached_dict[func_id]['shapes']
 
@@ -33,7 +33,7 @@ def jit(*shapes):
             ph = [placeholder(name=arg[1], shape=shapes[arg[0]]) for arg in enumerate(arg_names)]
             fun_name = func.__code__.co_name
 
-            jb = JetBuilder(args=ph, out=[func(*ph)],
+            jb = JetBuilder(args=ph, out=func(*ph),
                     file_name=sanitize_name('{}_{}_{func_name}'.format(
                             *get_caller_info('jit.py')[1:-1],
                             func_name=fun_name)),
@@ -43,7 +43,7 @@ def jit(*shapes):
             jet_func = getattr(jet_class(), jb.fun_name)
             _func_cached_dict[func_id]['func'] = jet_func
 
-            return jet_func(*args)[0]
+            return jet_func(*args)
         return wrapper
 
     if shapes and callable(shapes[0]):
@@ -68,13 +68,9 @@ if __name__ == "__main__":
 
     @jit
     def test_func3(a, b):
-        return sub_func(a) * b
+        return (sub_func(a) * b, b)
 
     b = 1.0
     print(test_func(numpy.array([1, 2]), b))
-    print(test_func(numpy.array([1, 4]), b))
     print(test_func2(numpy.array([1, 2]), b))
     print(test_func3(numpy.array([1, 2]), b))
-    print(test_func3(numpy.array([1, 2]), b))
-
-    print(_func_cached_dict)

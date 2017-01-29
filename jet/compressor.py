@@ -56,13 +56,13 @@ public:
 #endif
 
     // function
-    tuple<{ret_types}> {fun_name}({args}) {{
+    {ret_types} {fun_name}({args}) {{
 
 
         {ops}
 
 
-        return make_tuple({ret_names});
+        return {ret};
     }}
 }};
 
@@ -161,8 +161,12 @@ class JetBuilder(object):
         Args:
             out (list): list of graph nodes
         """
-        self.return_names = [r.name for r in out]
-        self.return_types = [get_type(r) for r in out]
+        if isinstance(out, list) or isinstance(out, tuple):
+            self.return_names = [r.name for r in out]
+            self.return_types = [get_type(r) for r in out]
+        else:
+            self.return_names = [out.name]
+            self.return_types = [get_type(out)]
 
     def _extract_nodes_for_return(self, out):
         """
@@ -257,8 +261,10 @@ class JetBuilder(object):
                 ).join([repr(self.Op(op)) for op in all_ops]) % \
                             tuple(range(len(all_ops)-1)) if config.debug else \
                 '\n'.join([repr(self.Op(op)) for op in all_ops]),
-            ret_types=', '.join(self.return_types),
-            ret_names=', '.join(self.return_names),
+            ret_types='tuple<' + ', '.join(self.return_types) + '>' if \
+                    len(self.return_types) > 1 else self.return_types[0],
+            ret='make_tuple(' + ', '.join(self.return_names) + ')' if \
+                    len(self.return_names) > 1 else self.return_names[0],
             arg_names=', '.join(['"{}"'.format(arg.name) for arg in self.args]),
             state_accessors='\n'.join(all_accessors))
         )
