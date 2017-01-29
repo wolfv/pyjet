@@ -55,8 +55,6 @@ def jit(*shapes):
 if __name__ == "__main__":
     import numpy
     
-    jet.set_options(jet_mode=True)
-
     @jit((2,), ())
     def test_func(a, b):
         return a + b

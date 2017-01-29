@@ -92,7 +92,7 @@ else:
 _overload_funcs()
 # _overload_funcs_deep(globals(), obj=sys.modules[__name__])
 
-def set_options(jet_mode=False,
+def set_options(jet_mode=True,
                 debug=False,
                 merge=True,
                 print_banner=True,

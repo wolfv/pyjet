@@ -21,11 +21,37 @@ between the nodes.
 
 ***
 
+## Use Case
+
+Significant speed-up is achieved for non-parallelizable functions such as
+physical models. For parallelizable functions please consider using TensorFlow.
+
+Instead of calling a huge, math-heavy Python/Numpy simulation model on every
+iteration JET packs the whole model in a single performant C++ function which 
+results in an enormous speed-up (up to 60-fold speed up was observed in a
+simulation of a math-heavy quadcopter-model).
+
+```python
+from jet.jit import jit
+
+import scipy.integrate
+from simulation_model import state_derivatives, init_state, time_vec
+
+jet_state_derivatives = jit(state_derivatives)
+
+states = scipy.integrate.odeint(
+    jet_state_derivatives,
+    init_state,
+    time_vec)
+```
+
+***
+
 ## Setup
 
 Run the post-install script using the JET-CLI:
 
-    jet --install-dependencies
+    sudo jet --install-dependencies
 
 Note: Is currently only tested on Ubuntu (known to be broken on macOS).
 
@@ -43,7 +69,6 @@ The following example will guide you through the main principles of JET.
 
 ```python
 import jet as jt
-jt.set_options(jet_mode=True) # Activate JET
 
 ph  = jt.placeholder(name='holder', shape=(3, 3))
 var   = jt.variable(name='variable', value=np.zeros((2, 1)))
@@ -184,9 +209,6 @@ import jet
 from jet import jit
 import numpy as np
 
-
-jet.set_options(jet_mode=True)
-
 @jit((2,), ()) # or @jit, @jit()
 def calc(a, b):
     c = a + b
@@ -207,15 +229,13 @@ Supported shapes:
 
 ### Migrating from a Numpy-project
 
-When migrating from a numpy project there are a few minor steps which must be
-taken:
+When migrating from a numpy project there are minor steps which must be taken:
 * Replace numpy operations with JET operations. Usually replacing `import numpy 
 as np` with `import jet as np` is sufficient. You don't have to replace constants
 such as `np.array([1, 2])` with JET-arrays.
 * Decorate all top-level functions with the JIT-decorator (or manually pass
 placeholders like in the tutorial above).
-* Set `jet_mode` to `True`. If `False` the the execution will be eqaual to normal
-Numpy instead.
+
 
 E.g.:
 
@@ -237,9 +257,6 @@ becomes
 ```python
 import jet as np
 from jet.jit import jit
-
-# has to be set only once since jet is a singleton module
-np.set_options(jet_mode=True)
 
 def sub_func(a):
     return a * 2
@@ -385,11 +402,11 @@ distribution. `mean` and `sd` can be vectors.
 
 ## Set JET Options
 
-We can specify with which mode JET is flying when running a script which imports JET using the
-`set_options` function:
+We can specify with which mode JET is flying when running a script which imports
+JET using the `set_options` function:
 
 ```python
-jet.set_options(jet_mode=False,
+jet.set_options(jet_mode=True,
                 debug=False,
                 no_merge=False,
                 draw_graph=False,
@@ -399,65 +416,58 @@ jet.set_options(jet_mode=False,
                 DTYPE=numpy.float64)
 ```
 
-  `jet_mode`:           Fly Mach 2 with JET. If this flag is not set JET will
-                        run using numpy instead.
+`jet_mode`:           Fly Mach 2 with JET. If this flag is not set JET will
+                      run using numpy instead.
 
-  `debug`:              Print what JET is doing. Every variable from the auto-
-                        generated C++ code is printed in the console along
-                        with an identifier from the auto-generated C++ code.
+`debug`:              Print what JET is doing. Every variable from the auto-
+                      generated C++ code is printed in the console along
+                      with an identifier from the auto-generated C++ code.
 
-  `no_merge`            If not set, JET will merge some operations such as
-                        addition and multiplication into one execution statement
-                        in the auto-generated C++ code.
+`no_merge`            If not set, JET will merge some operations such as
+                      addition and multiplication into one execution statement
+                      in the auto-generated C++ code.
 
-  `draw_graph`:         Draw the JET-graph. A dot graph of the JET-function is
-                        stored in the 'jet-graph' folder.
+`draw_graph`:         Draw the JET-graph. A dot graph of the JET-function is
+                      stored in the 'jet-graph' folder.
 
-  `draw_graph_raw`:     Draw the raw jet-graph. A dot graph of the JET-
-                        function is stored in the 'jet-graph' folder without
-                        cleaning out the unused nodes.
+`draw_graph_raw`:     Draw the raw jet-graph. A dot graph of the JET-
+                      function is stored in the 'jet-graph' folder without
+                      cleaning out the unused nodes.
 
-  `group_class`:        Group nodes from the same class in graph-drawing.
+`group_class`:        Group nodes from the same class in graph-drawing.
 
-  `group_func`:         Group nodes from the same function in the graph-
-                        drawing.
+`group_func`:         Group nodes from the same function in the graph-
+                      drawing.
 
-  `DTYPE`:              Basic float type such as `numpy.float32` or `numpy.float64`.
+`DTYPE`:              Basic float type such as `numpy.float32` or `numpy.float64`.
 
 ***
 
-## Setup Dependencies
-### Armadillo
-Currently, Armadillo is used as library for matrix operations. It gets automatically installed when building the package with Catkin.
+## JET-CLI
 
-Manually install Armadillo library:
+```text
+usage: jet [-h] [-c] [--install-dependencies] [-v]
 
-`cd path/to/jet/`
+optional arguments:
+  -h, --help            show this help message and exit
+  -c, --clean           delete all files generated by JET
+  --install-dependencies
+                        install JET dependencies
+  -v, --version         show version number
+```
 
-`python install_armadillo.py`
+***
 
-### BLAS and LAPACK
-Linear algebra libraries required by Armadillo.
+## Dependencies
 
-Installation:
-
-`sudo apt-get install libblas-dev liblapack-dev`
-
-### PyGraphviz
-PyGraphviz is used to create a .dot-file representation of JET's computation graph.
-
-Installation:
-
-`sudo apt-get install graphviz`
-
-`sudo pip install pygraphviz --install-option="--include-path=/usr/include/graphviz" --install-option="--library-path=/usr/lib/graphviz/"`
-
-### NetworkX
-JET's computation graph is stored using NetworkX.
-
-Installation:
-
-`sudo pip install networkx`
+| Dependency      | Description |
+| --------------- | :--------------------------------------------------------- |
+| Armadillo       | Currently, Armadillo is used as library for matrix operations. It gets automatically installed when building the package with Catkin. |
+| CMake           | Tool required to build Armadillo |
+| BLAS and LAPACK | Linear algebra libraries required by Armadillo. |
+| PyGraphviz      | Graph visualization tool is used to create a .dot-file representation of JET's computation graph. |
+| Graphviz        | Required by PyGraphviz. |
+| NetworkX        | JET's computation graph is stored using NetworkX. |
 
 ***
 

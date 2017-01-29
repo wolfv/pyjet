@@ -501,7 +501,6 @@ if __name__ == '__main__':
     # example:
     import jet as jt
 
-    jt.set_options(jet_mode=True)
     ph = jt.placeholder(name='holder', shape=(3, 3))
     var = jt.variable(name='variable', value=numpy.zeros((2,1)))
     const = jt.constant(name='constant', value=1.5)
