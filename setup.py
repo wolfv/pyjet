@@ -3,7 +3,14 @@ import sys, os
 from fnmatch import fnmatch
 from setuptools import setup
 from setuptools.command.install import install
+if sys.version_info[0] >= 3:
+    from configparser import  ConfigParser
+else:
+    from ConfigParser import  ConfigParser
 
+
+config = ConfigParser()
+config.read("jet/.metadata")
 
 def package_files(directory):
     paths = []
@@ -31,7 +38,7 @@ to performant C++."""
 
 setup(
     name='Jet',
-    version='0.0',
+    version=config.get('Version', 'version'),
     description='JET, a framework for faster numeric Python',
     long_description=long_description,
     author='Wolf Vollprecht, Orestis Zambounis',
@@ -47,6 +54,7 @@ setup(
             'jet':
                 ['post_install/*',
                 'include/*.h',
+                '.metadata',
                 '../.gitignore'] + 
                 package_files('jet/thirdparty')
             },
