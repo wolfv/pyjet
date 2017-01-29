@@ -30,3 +30,5 @@ if args.install_dependencies:
     os.system('python ' + jet_path + '/post_install/post_install.py')
 if args.version:
     print(config.get('Version', 'version'))
+else:
+    print("Arguments missing. Please use '--help' for information on how to use the jet-cli.")

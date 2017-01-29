@@ -37,17 +37,34 @@ run faster. This is achieved by transparently converting Python/NumPy operations
 to performant C++."""
 
 setup(
-    name='Jet',
+    name='jet',
     version=config.get('Version', 'version'),
-    description='JET, a framework for faster numeric Python',
-    long_description=long_description,
     author='Wolf Vollprecht, Orestis Zambounis',
     author_email='w.vollprecht@gmail.com',
+    description='JET, a framework for faster numeric Python',
+    long_description=long_description,
+
     url='https://github.com/wolfv/pyjet/',
     license='MIT',
+    
+    platforms=['Ubuntu'],
+    classifiers=[
+              'Development Status :: 4 - Beta',
+              'Natural Language :: English',
+              'Operating System :: Unix',
+              'License :: OSI Approved :: MIT License',
+              'Programming Language :: Python',
+              'Intended Audience :: Developers',
+              'Intended Audience :: Science/Research',
+              'Topic :: Scientific/Engineering :: Mathematics',
+              'Topic :: Scientific/Engineering :: Physics',
+              'Topic :: Software Development :: Code Generators',
+              'Topic :: Software Development :: Libraries :: Python Modules',
+              ],
+
     install_requires=[
             'numpy',
-            'networkx',],
+            'networkx'],
     packages=['jet'],
     scripts=['bin/jet'],
     package_data={
