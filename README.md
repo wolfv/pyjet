@@ -49,7 +49,7 @@ states = scipy.integrate.odeint(
 
 ## Setup
 
-Run the post-install script using the JET-CLI:
+Run the post-install script using the JET-cli:
 
     sudo jet --install-dependencies
 
@@ -205,7 +205,6 @@ The quickest way to speed up a function with JET is by using the JIT
 (Just-In-Time compiler) decorator:
 
 ```python
-import jet
 from jet import jit
 import numpy as np
 
