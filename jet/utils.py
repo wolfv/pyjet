@@ -65,6 +65,7 @@ def beauty(text):
         stdout, stderr = p.communicate(input=text)
         return stdout
     except:
+        print("Failed to beautify C++ code. Is clang-format installed? ('sudo apt install clang-format')")
         return text
 
 def slice_to_str(slice_obj):

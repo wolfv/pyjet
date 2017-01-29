@@ -455,7 +455,6 @@ class variable(array): # TODO dominique: PEP8 requires CamelCase for class names
 class placeholder(array): # TODO dominique: PEP8 requires CamelCase for class names
     # placeholder results in argument to be passed in generated function
     def __init__(self, name='placeholder', shape=(), dtype=config.DTYPE):
-        expander.placeholder_count
         super(placeholder, self).__init__(name=name, shape=shape, dtype=dtype)
         op = expander.PlaceholderOp([self],
                                 placeholder_count=expander.placeholder_count)

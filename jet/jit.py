@@ -33,7 +33,7 @@ def jit(*shapes):
             ph = [placeholder(name=arg[1], shape=shapes[arg[0]]) for arg in enumerate(arg_names)]
             fun_name = func.__code__.co_name
 
-            jb = JetBuilder(out=[func(*ph)],
+            jb = JetBuilder(args=ph, out=func(*ph),
                     file_name=sanitize_name('{}_{}_{func_name}'.format(
                             *get_caller_info('jit.py')[1:-1],
                             func_name=fun_name)),
@@ -68,13 +68,9 @@ if __name__ == "__main__":
 
     @jit
     def test_func3(a, b):
-        return sub_func(a) * b
+        return (sub_func(a) * b, b)
 
     b = 1.0
     print(test_func(numpy.array([1, 2]), b))
-    print(test_func(numpy.array([1, 4]), b))
     print(test_func2(numpy.array([1, 2]), b))
     print(test_func3(numpy.array([1, 2]), b))
-    print(test_func3(numpy.array([1, 2]), b))
-
-    print(_func_cached_dict)
