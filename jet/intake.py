@@ -499,30 +499,29 @@ def _check_not_jet_type(obj, name):
 if __name__ == '__main__':
     # test jet functionality here
     # example:
-    ph  = placeholder(name='holder', shape=(3, 3))
-    var   = variable(name='variable', value=numpy.zeros((2,1)))
-    const = constant(name='constant', value=1.5)
+    import jet as jt
+
+    ph = jt.placeholder(name='holder', shape=(3, 3))
+    var = jt.variable(name='variable', value=numpy.zeros((2,1)))
+    const = jt.constant(name='constant', value=1.5)
     op = ph[1, 1] + ph[0:2, 0:2] * var + const
-    out0 = concatenate((var, op), axis=1)
-    out1 = linalg.norm(var)
+    out0 = jt.concatenate((var, op), axis=1)
+    out1 = jt.linalg.norm(var)
     ph[0:2, 0:1] = var
 
-    from burn import draw
-    draw(graph, name='graph')
+    from jet.burn import draw
+    draw(jt.graph, name='graph')
 
-    from intake import JetBuilder
-    from exhaust import compile_cpp
+    from jet.compressor import JetBuilder
 
-    jb = JetBuilder(graph, out=[out0, out1], fun_name='test')
-    test_source = jb.build()
-    print(test_source)
+    jb = JetBuilder(out=[out0, out1], fun_name='test')
+    test_module = jb.build()
+    test_class = test_module.TestClass()
 
-    test = compile_cpp(test_source, 'test_source')
-    tj = test.JetTest()
-    print(tj.variable)
-    tj.variable = numpy.array([1, 2]) # (n,)-shaped numpy vectors are represented 
+    print(test_class.variable)
+    test_class.variable = numpy.array([1, 2]) # (n,)-shaped numpy vectors are represented 
                                    # as (n, 1)-shaped matrices in Armadillo
-    print(tj.test(numpy.ones((3,3))))
+    print(test_class.test(numpy.ones((3,3))))
 
     # numpy to compare
     ph = numpy.ones((3,3))

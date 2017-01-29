@@ -9,7 +9,6 @@ if sys.version_info >= (3, 4):
 elif sys.version_info[0] > 3:
     import imp
     reload = imp.reload
-    
 
 
 jet_mode = config.jet_mode
@@ -72,6 +71,8 @@ def _overload_funcs():
 if jet_mode:
     from numpy import *
     from jet.intake import *
+    from jet.expander import graph, import_intake
+    import_intake()
     if config.print_banner:
         print(config.BANNER)
     if config.debug:
@@ -91,7 +92,7 @@ else:
 _overload_funcs()
 # _overload_funcs_deep(globals(), obj=sys.modules[__name__])
 
-def set_options(jet_mode=False,
+def set_options(jet_mode=True,
                 debug=False,
                 merge=True,
                 print_banner=True,
@@ -121,7 +122,3 @@ def while_loop(cond, body, args):
         raise NotImplementedError()
         op = WhileOp#([cond] + [body(*args, register as while subgraph)])
         return op.get_output()
-
-
-
-

@@ -23,7 +23,7 @@ BANNER = """
                         }_`============>-
 """
 
-jet_mode = False
+jet_mode = True
 debug = False
 merge = True
 print_banner = True

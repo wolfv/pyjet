@@ -1,7 +1,7 @@
-import pygraphviz as pyg # TODO dominique: add these dependencies to package.xml
-import networkx as nx # TODO dominique: add these dependencies to package.xml
+import pygraphviz as pyg
+import networkx as nx
 import os
-from jet.config import group_class, group_func # TODO dominique: always import using `jet.*`, i.e., here `jet.config`
+from jet.config import group_class, group_func
 
 
 def draw(graph, outputs=[], name='graph'):

@@ -1,9 +1,7 @@
 import numpy as np
-import inspect
 from pprint import pprint
 import networkx as nx
-from jet import intake
-from jet.utils import get_unique_name
+from jet.utils import get_unique_name, get_caller_info, slice_to_str
 from jet import config
 
 
@@ -12,11 +10,18 @@ constants = []
 placeholder_count = 0
 graph = nx.DiGraph()
 
+# hack to fix issues with circular dependencies
+intake = None
+def import_intake():
+    global intake
+    if intake is None:
+        from jet import intake
+
 ##########################################################################
 ####                          Operations                              ####
 ##########################################################################
 
-class Op(object): # TODO dominique: I think these are better described with expression, than with operation
+class Op(object):
     # Base class for all operations
     def __init__(self, inputs, *args, **kwargs):
         self.inputs_raw = inputs
@@ -24,7 +29,7 @@ class Op(object): # TODO dominique: I think these are better described with expr
         self.output = None
         self.init_op(self.inputs, *args, **kwargs)
         if config.debug or config.group_class or config.group_func:
-            self.caller_info = get_caller_info()
+            self.caller_info = get_caller_info('expander.py', 'intake.py')
         else:
             self.caller_info = None
         self.add_to_graph()
@@ -95,7 +100,7 @@ class CreateArrayOp(Op):
         self.output = producer # TODO dominique: this is some weird naming convention: a producer is an output? isn't a producer normally responsible for the input?
         self.shape = shape
         if config.debug or config.group_class or config.group_func:
-            self.caller_info = get_caller_info()
+            self.caller_info = get_caller_info('expander.py', 'intake.py')
         else:
             self.caller_info = None
         self.add_to_graph()
@@ -137,7 +142,7 @@ class AssignOp(Op):
             if s != self.inputs[0].last_producer:
                 graph.add_edge(s, self, edge_type='helper')
         if config.debug or config.group_class or config.group_func:
-            self.caller_info = get_caller_info()
+            self.caller_info = get_caller_info('expander.py', 'intake.py')
         else:
             self.caller_info = None
         self.add_to_graph()
@@ -558,8 +563,8 @@ def find_node(n):
 def check_type(*args):
     arg_list = list(args)
     num_types = [float, int, bool, np.ndarray, np.float64, np.float32]
-    jet_types = [intake.variable, 
-                            intake.constant, intake.placeholder, intake.array]
+    jet_types = [intake.variable, intake.constant, intake.placeholder, intake.array]
+
     for i, arg in enumerate(args):
         if arg is not None and type(arg) not in jet_types:
             if type(arg) in num_types:
@@ -569,38 +574,3 @@ def check_type(*args):
             else:
                 raise ValueError('Unexpected type \'{}\'.'.format(type(arg)))
     return arg_list
-
-def get_caller_info():
-        curframe = inspect.currentframe()
-        calframe = inspect.getouterframes(curframe)
-        i = 0
-        while((len(calframe[i][1]) >= 11 and calframe[i][1][-11:] == 'expander.py') 
-                or
-                (len(calframe[i][1]) >= 9 and calframe[i][1][-9:] == 'intake.py')):
-            i += 1
-        class_name = get_class_from_frame(calframe[i][0])
-        line = 'line {}'.format(calframe[i][2])
-        if class_name:
-            return class_name[0], class_name[1], calframe[i][3], line
-        else:
-            file_path_full = calframe[i][1]
-            return file_path_full, file_path_full.split('/')[-1].split('.')[0], \
-                   calframe[i][3], line
-
-def get_class_from_frame(fr):
-    args, _, _, value_dict = inspect.getargvalues(fr)
-    # we check the first parameter for the frame function is named 'self'
-    if len(args) and args[0] == 'self':
-        # in that case, 'self' will be referenced in value_dict
-        instance = value_dict.get('self', None)
-        if instance:
-            # return its class
-            class_name_full = str(getattr(instance, '__class__', ''))
-            return class_name_full, class_name_full.split('.')[-1]
-    # return None otherwise
-    instance = value_dict.get('__module__', None)
-    if instance:
-        # return its class
-        module_name_full = instance
-        return module_name_full, module_name_full.split('.')[-1]
-    return None

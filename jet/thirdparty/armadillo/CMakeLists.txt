@@ -23,7 +23,7 @@ include(CheckLibraryExists)
 ## You will then need to link your programs with -lblas -llapack instead of -larmadillo
 ## If you're using OpenBLAS, link your programs with -lopenblas -llapack instead of -larmadillo
 
-set(ARMA_USE_WRAPPER true)
+set(ARMA_USE_WRAPPER false)
 
 
 # the settings below will be automatically configured by the rest of this script
