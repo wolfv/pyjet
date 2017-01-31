@@ -2,15 +2,9 @@
 import sys, os
 from fnmatch import fnmatch
 from setuptools import setup
-from setuptools.command.install import install
-if sys.version_info[0] >= 3:
-    from configparser import  ConfigParser
-else:
-    from ConfigParser import  ConfigParser
 
 
-config = ConfigParser()
-config.read("jet/.metadata")
+exec(open('jet/version.py').read())
 
 def package_files(directory):
     paths = []
@@ -38,7 +32,7 @@ to performant C++."""
 
 setup(
     name='jet',
-    version=config.get('Version', 'version'),
+    version=__version__,
     author='Wolf Vollprecht, Orestis Zambounis',
     author_email='w.vollprecht@gmail.com',
     description='JET, a framework for faster numeric Python',

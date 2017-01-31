@@ -2,16 +2,9 @@
 import argparse
 import sys, os, shutil
 import pkgutil
-if sys.version_info[0] >= 3:
-    from configparser import  ConfigParser
-else:
-    from ConfigParser import  ConfigParser
-
+from jet.version import __version__
 
 jet_path = pkgutil.get_loader("jet").filename
-
-config = ConfigParser()
-config.read(jet_path + "/.metadata")
 
 description = \
 """
@@ -30,6 +23,6 @@ if args.clean:
 elif args.install_dependencies:
     os.system('python ' + jet_path + '/post_install/post_install.py')
 elif args.version:
-    print(config.get('Version', 'version'))
+    print(__version__)
 else:
     print("Arguments missing. Please use '--help' for information on how to use the jet-cli.")
