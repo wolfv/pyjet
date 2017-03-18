@@ -1,32 +1,31 @@
-import sys
-import types
-from inspect import isclass
+from sys import modules as _modules
+import types as _types
 import numpy
 from jet import config
 jet_mode = config.jet_mode
-from jet import helpers
-from jet import intake
-from jet.expander import import_intake, graph;
-import_intake()
+from jet import helpers as _helpers
+from jet import intake as _intake
+from jet.expander import import_intake as _import_intake, graph;
+_import_intake()
 
 
 # jet module
-module = sys.modules[__name__]
+module = _modules[__name__]
 
 # decorate numpy attributes 
 for name, attr in numpy.__dict__.iteritems():
-    if not name.startswith("_") and not isinstance(attr, types.BuiltinFunctionType):
+    if not name.startswith("_") and not isinstance(attr, _types.BuiltinFunctionType):
         if callable(attr):
-            module.__dict__[name] = helpers.numpy_mode(attr)
+            module.__dict__[name] = _helpers.numpy_mode(attr)
         else:
             module.__dict__[name] = attr
 
 # decorate jet-intake attributes
-for name, attr in intake.__dict__.iteritems():
+for name, attr in _intake.__dict__.iteritems():
     if not name.startswith("_") and \
             (callable(attr) or hasattr(attr, '__class__')) and \
-            not isinstance(attr, types.BuiltinFunctionType):
-        module.__dict__[name] = helpers.jet_mode(attr)
+            not isinstance(attr, _types.BuiltinFunctionType):
+        module.__dict__[name] = _helpers.jet_mode(attr)
 
 def set_options(jet_mode=True,
                 debug=False,
