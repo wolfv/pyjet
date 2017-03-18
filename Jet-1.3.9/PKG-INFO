@@ -1,0 +1,12 @@
+Metadata-Version: 1.0
+Name: Jet
+Version: 1.3.9
+Summary: JET, a framework for faster numeric Python
+Home-page: https://github.com/wolfv/pyjet/
+Author: Wolf Vollprecht, Orestis Zambounis
+Author-email: w.vollprecht@gmail.com
+License: MIT
+Description: The JET library offers a simple way to make Python, and especially NumPy code
+        run faster. This is achieved by transparently converting Python/NumPy operations
+        to performant C++.
+Platform: UNKNOWN

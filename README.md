@@ -459,13 +459,13 @@ optional arguments:
 
 | Dependency      | Description |
 | --------------- | :--------------------------------------------------------- |
-| Armadillo       | Currently, Armadillo is used as library for matrix operations. It gets automatically installed when building the package with Catkin. |
+| Armadillo       | Currently, Armadillo is used as library for matrix operations. It gets automatically installed when building the package with Catkin |
 | CMake           | Tool required to build Armadillo |
-| BLAS and LAPACK | Linear algebra libraries required by Armadillo. |
-| PyGraphviz      | Graph visualization tool is used to create a .dot-file representation of JET's computation graph. |
-| Graphviz        | Required by PyGraphviz. |
+| BLAS and LAPACK | Linear algebra libraries required by Armadillo |
+| PyGraphviz      | Graph visualization tool is used to create a .dot-file representation of JET's computation graph |
+| Graphviz        | Required by PyGraphviz |
 | NetworkX        | JET's computation graph is stored using NetworkX. |
-| ClangFormat     | Used to auto-format the C++ code. |
+| ClangFormat     | Used to auto-format the C++ code |
 
 ***
 
