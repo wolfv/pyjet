@@ -80,19 +80,19 @@ def maximum(x, y):
 def minimum(x, y):
     return where(x < y, x, y)
 
-def matmul(lhs, rhs):
-    op = expander.MatMulOp([lhs, rhs])
+def matmul(x, y):
+    op = expander.MatMulOp([x, y])
     return op.get_output()
 
-def dot(lhs, rhs):
-    if len(lhs.shape) == 1 and len(rhs.shape) == 1:
-        op = expander.DotOp([lhs, rhs])
+def dot(x, y):
+    if len(x.shape) == 1 and len(y.shape) == 1:
+        op = expander.DotOp([x, y])
     else:
-        op = expander.MatMulOp([lhs, rhs])
+        op = expander.MatMulOp([x, y])
     return op.get_output()
 
-def cross(lhs, rhs):
-    op = expander.CrossOp([lhs, rhs])
+def cross(x, y):
+    op = expander.CrossOp([x, y])
     return op.get_output()
 
 def mod(x, y):
