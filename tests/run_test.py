@@ -6,8 +6,6 @@ from random import randint
 from inspect import getargspec
 
 
-jet.set_options(merge=False)
-
 ERROR_MAX = 1.e-6
 
 dimensions = []
