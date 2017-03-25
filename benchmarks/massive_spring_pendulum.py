@@ -3,9 +3,8 @@ import jet
 import numpy
 from jet.jit import jit
 from scipy.integrate import odeint
+from utils import profile
 
-# jet_mode
-# jet.set_options(jet_mode=False)
 
 #Create spring dictionary
 spring = {
@@ -16,10 +15,6 @@ spring = {
 
 #Specify mass of attachment
 mass = 1.0  # Mass of attachment in kg
-
-#Specify initial conditions
-init = numpy.array([jet.pi/2, 0, mass*9.8/spring['k'], 0]) # initial values
-            #array([theta, theta_dot, x, x_dot])
 
 #Return derivatives of the array z (= [theta, theta_dot, x, x_dot])
 @jit
@@ -38,22 +33,22 @@ def deriv(z, t):
         ])
 
 #Create time steps
-time = numpy.linspace(0.0, 10.0, 1e8)
+time = numpy.linspace(0.0, 10.0, 1e7)
 
-from timeit import default_timer as timer
-def profile(func):
-    start = timer()
-    func()
-    end = timer()
-    return(end - start)
+#Specify initial conditions
+init = numpy.array([jet.pi  / 2, 0, mass * 9.8 / spring['k'], 0]) # initial values
+            #array([theta, theta_dot, x, x_dot])
 
 profile_derive = lambda: profile(lambda: deriv(init, time[0]))
 profile_odeint = lambda: profile(lambda: odeint(deriv, init, time))
 
-if jet.jet_mode:
-    print(profile_derive())
-print(profile_derive())
+print('jet_mode = True')
+print('derivatives: %f, %f' % (profile_derive(), profile_derive()))
+print('integration: %f' % profile_odeint())
+
+jet.set_options(jet_mode=False)
+
 print('---')
-if jet.jet_mode:
-    print(profile_odeint())
-print(profile_odeint())
+print('jet_mode = False')
+print('derivatives: %f' % profile_derive())
+print('integration: %f' % profile_odeint())
