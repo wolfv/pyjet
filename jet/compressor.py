@@ -81,7 +81,6 @@ void pyexport(py::module& m) {{
 fmt_print_double = 'cout << {name} << endl;\n'
 fmt_print_mat = 'cout.width(cell_width); {name}.raw_print(); cout.width(0);\n'
 fmt_caller = '/* caller: {caller_class}, function {caller_fun}, {caller_line} */'
-graph = None
 
 dtype_map = {
     np.dtype(np.float32): 'float',
@@ -122,7 +121,7 @@ class JetBuilder(object):
         self.constants = []
         self.Op = OpCollector()
         self.file_name = file_name
-        self.fun_name = fun_name
+        self.fun_name = fun_name + 'Func'
         self.class_name = fun_name.title() + 'Class'
         self.extract_return(out)
 
@@ -130,7 +129,8 @@ class JetBuilder(object):
         current_nodes = self._extract_nodes_for_return(out)
         self.subgraph = self.graph.subgraph(current_nodes)
         topo_sorted = nx.topological_sort(self.subgraph)
-        self._merge_ops(self.subgraph, topo_sorted)
+        if not config.debug and config.merge:
+            self._merge_ops(self.subgraph, topo_sorted)
 
         for el in topo_sorted:
             if el not in current_nodes:
@@ -180,6 +180,9 @@ class JetBuilder(object):
         Returns:
             Set of all nodes which are necessary to compute all outputs.
         """
+        if not (isinstance(out, list) or isinstance(out, tuple)):
+            out = [out]
+
         pres = set()
         for node in out:
             other_nodes = set()
@@ -217,10 +220,8 @@ class JetBuilder(object):
             graph (nx.DiGraph): The jet graph
             ordered_nodes (list): The topologically sorted nodes
         """
-        if config.debug or not config.merge:
-            return
 
-        mergeables = ['Add', 'Sub', 'Mul', 'Div', 'ArrayAccess', 'Pow']
+        mergeables = ['Add', 'Sub', 'Mul', 'Div', 'ArrayAccess', 'Pow', 'Or', 'And']
 
         for node in ordered_nodes:
             if node.op not in mergeables:

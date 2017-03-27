@@ -80,19 +80,19 @@ def maximum(x, y):
 def minimum(x, y):
     return where(x < y, x, y)
 
-def matmul(lhs, rhs):
-    op = expander.MatMulOp([lhs, rhs])
+def matmul(x, y):
+    op = expander.MatMulOp([x, y])
     return op.get_output()
 
-def dot(lhs, rhs):
-    if len(lhs.shape) == 1 and len(rhs.shape) == 1:
-        op = expander.DotOp([lhs, rhs])
+def dot(x, y):
+    if len(x.shape) == 1 and len(y.shape) == 1:
+        op = expander.DotOp([x, y])
     else:
-        op = expander.MatMulOp([lhs, rhs])
+        op = expander.MatMulOp([x, y])
     return op.get_output()
 
-def cross(lhs, rhs):
-    op = expander.CrossOp([lhs, rhs])
+def cross(x, y):
+    op = expander.CrossOp([x, y])
     return op.get_output()
 
 def mod(x, y):
@@ -498,18 +498,18 @@ def _check_not_jet_type(obj, name):
 if __name__ == '__main__':
     # test jet functionality here
     # example:
-    import jet as jt
+    import jet
 
-    ph = jt.placeholder(name='holder', shape=(3, 3))
-    var = jt.variable(name='variable', value=numpy.zeros((2,1)))
-    const = jt.constant(name='constant', value=1.5)
+    ph = jet.placeholder(name='holder', shape=(3, 3))
+    var = jet.variable(name='variable', value=numpy.zeros((2,1)))
+    const = jet.constant(name='constant', value=1.5)
     op = ph[1, 1] + ph[0:2, 0:2] * var + const
-    out0 = jt.concatenate((var, op), axis=1)
-    out1 = jt.linalg.norm(var)
+    out0 = jet.concatenate((var, op), axis=1)
+    out1 = jet.linalg.norm(var)
     ph[0:2, 0:1] = var
 
     from jet.burn import draw
-    draw(jt.graph, name='graph')
+    draw(jet.graph, name='graph')
 
     from jet.compressor import JetBuilder
 

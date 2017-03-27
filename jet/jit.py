@@ -2,6 +2,7 @@ from jet.compressor import JetBuilder
 from jet.utils import sanitize_name, get_caller_info
 from jet.intake import placeholder
 import jet
+from jet.utils import get_unique_name
 
 
 _func_cached_dict = {}
@@ -32,11 +33,13 @@ def jit(*shapes):
 
             ph = [placeholder(name=arg[1], shape=shapes[arg[0]]) for arg in enumerate(arg_names)]
             fun_name = func.__code__.co_name
+            if fun_name == '<lambda>':
+                fun_name = get_unique_name('lambda')
 
             jb = JetBuilder(args=ph, out=func(*ph),
-                    file_name=sanitize_name('{}_{}_{func_name}'.format(
+                    file_name=get_unique_name(sanitize_name('{}_{}_{func_name}'.format(
                             *get_caller_info('jit.py')[1:-1],
-                            func_name=fun_name)),
+                            func_name=fun_name))),
                     fun_name=fun_name)
             
             jet_class = getattr(jb.build(), jb.class_name)

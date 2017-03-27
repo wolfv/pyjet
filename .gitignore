@@ -39,7 +39,6 @@ cmake_install.cmake
 install_manifest.txt
 CTestTestfile.cmake
 installed
-ArmadilloConfig*
 tmp
 
 # Byte-compiled / optimized / DLL files
