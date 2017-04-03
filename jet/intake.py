@@ -2,14 +2,15 @@ import numpy
 from jet import config
 from jet import utils
 from jet import expander
+from jet import helpers
 
 
 ##########################################################################
 ####                       General Functions                          ####
 ##########################################################################
 
-def clip(a, a_min, a_max):
-    op = expander.ClipOp([a, a_min, a_max])
+def clip(array, a_min, a_max):
+    op = expander.ClipOp([array, a_min, a_max])
     return op.get_output()
 
 def where(condition, x, y):
@@ -174,7 +175,6 @@ def transpose(array):
 def ravel(array):
     return array.ravel()
 
-
 def reshape(array, shape):
     return array.reshape(shape)
 
@@ -214,27 +214,28 @@ def logical_not(x):
 ####                         Other Functions                          ####
 ##########################################################################
 
+@helpers.jet_static_class
 class linalg(object):
-    def solve(self, lhs, rhs):
+    def solve( lhs, rhs):
         op = expander.SolveOp([lhs, rhs])
         return op.get_output()
 
-    def norm(self, x, order=2):
+    def norm(x, order=2):
         op = expander.NormOp([x], order)
         return op.get_output()
-linalg = linalg()
 
+@helpers.jet_static_class
 class random(object):
-    def normal(self, mean=0, sd=1):
+    def normal(mean=0, sd=1):
         op = expander.RandomNormalOp([mean, sd])
         return op.get_output()
-random = random()
 
 ##########################################################################
 ####                         Array Objects                            ####
 ##########################################################################
 
-class array(object): # TODO dominique: PEP8 requires CamelCase for class names
+# not compatible with numpy's ndarray
+class ndarray(object): # TODO dominique: PEP8 requires CamelCase for class names
     def __init__(self, value=None, name='array', shape=(), dtype=config.DTYPE,
                  producer=None, **kwargs):
         if value is None:
@@ -440,7 +441,10 @@ class array(object): # TODO dominique: PEP8 requires CamelCase for class names
     def __array_wrap__(self, result):
         return constant(result)
 
-class variable(array): # TODO dominique: PEP8 requires CamelCase for class names
+def array(*args, **kwargs):
+    return ndarray(*args, **kwargs)
+
+class variable(ndarray): # TODO dominique: PEP8 requires CamelCase for class names
     # variable results in member variable in generated class
     def __init__(self, value=None, name='variable', shape=(), dtype=config.DTYPE):
         _check_not_jet_type(value, name)
@@ -452,7 +456,7 @@ class variable(array): # TODO dominique: PEP8 requires CamelCase for class names
         op = expander.VariableOp([self])
         self.producer = op
 
-class placeholder(array): # TODO dominique: PEP8 requires CamelCase for class names
+class placeholder(ndarray): # TODO dominique: PEP8 requires CamelCase for class names
     # placeholder results in argument to be passed in generated function
     def __init__(self, name='placeholder', shape=(), dtype=config.DTYPE):
         super(placeholder, self).__init__(name=name, shape=shape, dtype=dtype)
@@ -466,7 +470,7 @@ class placeholder(array): # TODO dominique: PEP8 requires CamelCase for class na
         return '<placeholder: {}/{} {}>'.format(self.dtype.name, self.shape, 
                                                 self.name)
 
-class constant(array): # TODO dominique: PEP8 requires CamelCase for class names
+class constant(ndarray): # TODO dominique: PEP8 requires CamelCase for class names
     # constant results in constant expression in generated class
     def __init__(self, value, name='constant', dtype=config.DTYPE):
         _check_not_jet_type(value, name)
@@ -487,7 +491,7 @@ class constant(array): # TODO dominique: PEP8 requires CamelCase for class names
 ##########################################################################
 
 def _check_not_jet_type(obj, name):
-    if isinstance(obj, array) or (isinstance(obj, numpy.ndarray) and
+    if isinstance(obj, ndarray) or (isinstance(obj, numpy.ndarray) and
                                   obj.dtype == object):
         raise ValueError('Can\'t add this object to jet {}.'.format(name))
 

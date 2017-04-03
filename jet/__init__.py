@@ -1,5 +1,6 @@
 from sys import modules as _modules
 import types as _types
+import inspect as _inspect
 import numpy as _numpy
 from jet import config
 jet_mode = config.jet_mode
@@ -13,19 +14,21 @@ from jet.version import __version__
 module = _modules[__name__]
 
 # decorate numpy attributes 
-for name, attr in _numpy.__dict__.iteritems():
+for name, attr in _numpy.__dict__.items():
     if not name.startswith("_") and not isinstance(attr, _types.BuiltinFunctionType):
         if callable(attr):
-            module.__dict__[name] = _helpers.numpy_mode(attr)
+            module.__dict__[name] = _helpers.numpy_method(attr)
         else:
             module.__dict__[name] = attr
 
 # decorate jet-intake attributes
-for name, attr in _intake.__dict__.iteritems():
-    if not name.startswith("_") and \
-            (callable(attr) or hasattr(attr, '__class__')) and \
-            not isinstance(attr, _types.BuiltinFunctionType):
-        module.__dict__[name] = _helpers.jet_mode(attr)
+for name, attr in _intake.__dict__.items():
+    if not name.startswith("_"):
+        if _inspect.isclass(attr):
+            setattr(module, name, attr)
+        elif callable(attr) and \
+                not isinstance(attr, _types.BuiltinFunctionType):
+            module.__dict__[name] = _helpers.jet_method(attr)
 
 def set_options(jet_mode=True,
                 debug=False,
@@ -36,8 +39,8 @@ def set_options(jet_mode=True,
                 group_class=False,
                 group_func=False,
                 DTYPE=_numpy.float64):
-
-    jet_mode = jet_mode
+    
+    setattr(module, 'jet_mode', jet_mode)
     config.jet_mode = jet_mode
     config.debug = debug
     config.draw_graph = draw_graph

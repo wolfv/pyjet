@@ -563,7 +563,7 @@ def find_node(n):
 def check_type(*args):
     arg_list = list(args)
     num_types = [float, int, bool, np.ndarray, np.float64, np.float32]
-    jet_types = [intake.variable, intake.constant, intake.placeholder, intake.array]
+    jet_types = [intake.variable, intake.constant, intake.placeholder, intake.ndarray]
 
     for i, arg in enumerate(args):
         if arg is not None and type(arg) not in jet_types:

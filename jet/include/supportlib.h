@@ -68,7 +68,7 @@ void set_items(T& lhs, const Q& rhs, const std::array<int, 2>& start,
     }
 }
 
-template<typename T>
-T mod(const T& x, const float m) {
+template<typename T, typename S>
+T mod(const T& x, const S& m) {
     return std::fmod(x, m);
 }

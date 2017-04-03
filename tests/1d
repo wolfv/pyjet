@@ -1,0 +1,13 @@
+cross
+dot
+multiply
+matmul
+divide
+true_divide
+reciprocal
+clip
+ravel
+transpose
+concatenate
+vstack
+hstack

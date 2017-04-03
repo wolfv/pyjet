@@ -1,3 +1,4 @@
+import inspect
 from jet.compressor import JetBuilder
 from jet.utils import sanitize_name, get_caller_info
 from jet.intake import placeholder
@@ -22,7 +23,14 @@ def jit(*shapes):
 
             shapes = _func_cached_dict[func_id]['shapes']
 
-            arg_names = func.__code__.co_varnames[0:func.__code__.co_argcount]
+            if inspect.ismethod(func):
+                arg_names = func.__code__.co_varnames[1:func.__code__.co_argcount]
+            else:
+                arg_names = func.__code__.co_varnames[:func.__code__.co_argcount]
+
+            if len(arg_names) != len(args):
+                assert(len(arg_names) == 0)
+                arg_names = [get_unique_name('ph') for each in args]
 
             if len(shapes) != len(arg_names) and shapes:
                 raise ValueError('Shapes length does not match the arguments length.')
@@ -40,7 +48,7 @@ def jit(*shapes):
                     file_name=get_unique_name(sanitize_name('{}_{}_{func_name}'.format(
                             *get_caller_info('jit.py')[1:-1],
                             func_name=fun_name))),
-                    fun_name=fun_name)
+                    fun_name=get_unique_name(fun_name))
             
             jet_class = getattr(jb.build(), jb.class_name)
             jet_func = getattr(jet_class(), jb.fun_name)
