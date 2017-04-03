@@ -9,20 +9,19 @@ import numpy as np
 
 ERROR_MAX = 1.e-12
 
-if sys.argv[-1] == 'continue':
-    mode = 0
+mode = 0 if 'continue' in sys.argv else 1
 
 dimensions = []
 for f_name in ['0d', '1d', '2d']:
     with open(f_name) as file:
         dimensions_raw = file.readlines()
-    dimensions.append([line.strip() for line in dimensions_raw])
+    dimensions.append([line.strip() for line in dimensions_raw if line.strip()])
 
 mix = []
 for f_name in ['mix0d', 'mix1d']:
     with open(f_name) as file:
         mix_raw = file.readlines()
-    mix.append([line.strip() for line in mix_raw])
+    mix.append([line.strip() for line in mix_raw if line.strip()])
 
 def equal(x, y, member, tol=ERROR_MAX):
     if np.any(np.isnan(x)):
@@ -31,7 +30,10 @@ def equal(x, y, member, tol=ERROR_MAX):
     if mode:
         assert(np.all(abs(x - y) < tol))
     else:
-        cprint(member, np.all(abs(x - y) < tol), (x, y))
+        try:
+            cprint(member, np.all(abs(x - y) < tol), (x, y))
+        except:
+            cprint(member, False, (x, y))
 
 def rand_mat(shape):
     return 2.0 * np.random.rand(*shape) - 1.0
@@ -81,7 +83,9 @@ def compare(dim, member):
                   jit(lambda x: jet_func(x, (shape[0] ** 2,)))(mat_1), member + ', 1D')
         else:
             assert(False)
-    except :
+    except KeyboardInterrupt:
+        sys.exit(0)
+    except:
         e = sys.exc_info()[0]
         if mode:
             raise(e)
@@ -109,8 +113,8 @@ def test_2D():
     print("2D")
     print("-------")
 
-    for member in dimensions[1]:
-        compare(1, member)
+    for member in dimensions[2]:
+        compare(2, member)
 
 def test_mix():
     for dim, members in enumerate(mix):
@@ -133,7 +137,7 @@ def test_mix():
                     equal(numpy_func(mat, vec),
                           jit(jet_func)(mat, vec), member)
             except SystemExit:
-              cprint(member, False)
+                 cprint(member, False)
 
 def test_linalg():
     mat = rand_mat((3, 3))

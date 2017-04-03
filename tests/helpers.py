@@ -8,10 +8,8 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-def cprint(text, success, metadata=None):
+def cprint(text, success, metadata=''):
     if success:
         print(bcolors.OKGREEN + text + bcolors.ENDC)
     else:
-        print(bcolors.FAIL + text + bcolors.ENDC)
-        if metadata:
-            print(metadata)
+        print(bcolors.FAIL + text + bcolors.ENDC + (metadata and " " + str(metadata)))
