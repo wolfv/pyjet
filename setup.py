@@ -57,7 +57,7 @@ setup(
               ],
 
     install_requires=[
-            'numpy',
+            'numpy; python_version < "3"',
             'networkx'],
     packages=['jet'],
     scripts=['bin/jet'],

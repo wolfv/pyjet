@@ -14,7 +14,7 @@ from jet.version import __version__
 module = _modules[__name__]
 
 # decorate numpy attributes 
-for name, attr in _numpy.__dict__.iteritems():
+for name, attr in _numpy.__dict__.items():
     if not name.startswith("_") and not isinstance(attr, _types.BuiltinFunctionType):
         if callable(attr):
             module.__dict__[name] = _helpers.numpy_method(attr)
@@ -22,7 +22,7 @@ for name, attr in _numpy.__dict__.iteritems():
             module.__dict__[name] = attr
 
 # decorate jet-intake attributes
-for name, attr in _intake.__dict__.iteritems():
+for name, attr in _intake.__dict__.items():
     if not name.startswith("_"):
         if _inspect.isclass(attr):
             setattr(module, name, attr)

@@ -42,7 +42,7 @@ def jet_class_method(cls):
     return decorator
 
 def jet_static_class(cls):
-    for name, attr in cls.__dict__.iteritems():
+    for name, attr in cls.__dict__.items():
         if callable(attr):
             setattr(cls, name, staticmethod(jet_class_method(cls.__name__)(attr)))
     return cls

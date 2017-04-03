@@ -1,10 +1,10 @@
 #!/usr/bin/python
 import argparse
 import sys, os, shutil
-import pkgutil
+import imp
 from jet.version import __version__
 
-jet_path = pkgutil.get_loader("jet").filename
+jet_path = imp.find_module("jet")[1]
 
 description = \
 """
